@@ -48,7 +48,10 @@ cdef class CausalRegressionCriterion(RegressionCriterion):
             node_ct_sum += y_ik * (1. - is_treated)
 
         # save the average of treatment effects within a node as a value for the node
-        dest[0] = node_tr_sum / node_tr - node_ct_sum / node_ct
+        dest[1] = node_ct_sum / node_ct
+        dest[2] = node_tr_sum / node_tr
+        dest[0] = dest[2] - dest[1]
+
 
 cdef class StandardMSE(CausalRegressionCriterion):
     """

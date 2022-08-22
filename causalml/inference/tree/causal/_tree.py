@@ -209,7 +209,7 @@ class BaseCausalDecisionTree(BaseDecisionTree):
             )
             self.tree_ = Tree(
                 self.n_features_,
-                np.array([1] * self.n_outputs_, dtype=np.intp),
+                np.array([3] * self.n_outputs_, dtype=np.intp),
                 self.n_outputs_,
             )
 
