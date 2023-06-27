@@ -70,8 +70,7 @@ class BaseCausalDecisionTree(BaseDecisionTree):
             # [:, np.newaxis] that does not.
             y = np.reshape(y, (-1, 1))
 
-        # For memory allocation to store control, treatment outcomes
-        self.n_outputs_ = np.unique(sample_weight).astype(int).size
+        self.n_outputs_ = y.shape[1]
 
         if getattr(y, "dtype", None) != DOUBLE or not y.flags.contiguous:
             y = np.ascontiguousarray(y, dtype=DOUBLE)

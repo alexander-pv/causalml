@@ -22,5 +22,4 @@ test: build_ext
 .PHONY: clean
 clean:
 	python setup.py clean --all
-	rm -rf ./build ./dist ./eggs ./causalml.egg-info
-	find ./causalml -type f \( -name "*.so" -o -name "*.c" -o -name "*.html" \) -delete
+	rm -rf ./build ./dist ./causalml.egg-info
