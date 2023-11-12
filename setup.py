@@ -1,4 +1,5 @@
 import multiprocessing as mp
+import platform
 from setuptools import dist, setup, find_packages
 from setuptools.extension import Extension
 
@@ -15,6 +16,8 @@ try:
 except ImportError:
     dist.Distribution().fetch_build_eggs(["numpy"])
     from numpy import get_include as np_get_include
+
+os_threads = {"linux": mp.cpu_count(), "darwin": mp.cpu_count(), "windows": 0}
 
 # fmt: off
 cython_modules = [
@@ -43,6 +46,8 @@ packages = find_packages(exclude=["tests", "tests.*"])
 
 setup(
     packages=packages,
-    ext_modules=cythonize(extensions, annotate=True, nthreads=mp.cpu_count()),
+    ext_modules=cythonize(
+        extensions, annotate=True, nthreads=os_threads.get(platform.system().lower(), 0)
+    ),
     include_dirs=[np_get_include()],
 )
