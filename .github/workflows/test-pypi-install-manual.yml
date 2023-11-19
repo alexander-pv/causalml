@@ -1,0 +1,30 @@
+# Runners details:
+# https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners
+
+name: Manual test for package building
+
+on:
+  workflow_dispatch:
+      python_version:
+        description: 'Python version'
+        default: '3.9'
+        required: true
+      platform:
+        description: 'Platform'
+        default: 'ubuntu-latest'
+        required: true
+
+jobs:
+  build:
+    name: Building job
+    runs-on: ${{ github.event.inputs.platform }}
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Initialize Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ github.event.inputs.python_version }}
+
+      - name: Build package
+        run: python setup.py bdist_wheel && ls dist

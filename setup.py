@@ -1,21 +1,24 @@
 import multiprocessing as mp
-import os
-from setuptools import dist, setup, find_packages
+import platform
+from setuptools import setup, find_packages
 from setuptools.extension import Extension
+from Cython.Build import cythonize
+from numpy import get_include as np_get_include
 
-try:
-    from Cython.Build import cythonize
-except ImportError:
-    dist.Distribution().fetch_build_eggs(["cython<=0.29.34"])
-    from Cython.Build import cythonize
-import Cython.Compiler.Options
 
-Cython.Compiler.Options.annotate = True
-try:
-    from numpy import get_include as np_get_include
-except ImportError:
-    dist.Distribution().fetch_build_eggs(["numpy"])
-    from numpy import get_include as np_get_include
+class SetupSettings:
+
+    def __init__(self):
+        self.os = platform.system().lower()
+
+    @property
+    def nthreads(self) -> int:
+        return {
+            "linux": mp.cpu_count(),
+            "darwin": mp.cpu_count(),
+            "windows": 0
+        }.get(self.os, 0)
+
 
 # fmt: off
 cython_modules = [
@@ -28,6 +31,9 @@ cython_modules = [
     ("causalml.inference.tree.uplift", "causalml/inference/tree/uplift.pyx"),
 ]
 # fmt: on
+
+
+settings = SetupSettings()
 
 extensions = [
     Extension(
@@ -42,12 +48,8 @@ extensions = [
 
 packages = find_packages(exclude=["tests", "tests.*"])
 
-nthreads = mp.cpu_count()
-if os.name == "nt":
-    nthreads = 0
-
 setup(
     packages=packages,
-    ext_modules=cythonize(extensions, annotate=True, nthreads=nthreads),
+    ext_modules=cythonize(extensions, annotate=True, nthreads=settings.nthreads),
     include_dirs=[np_get_include()],
 )
