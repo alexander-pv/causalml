@@ -7,17 +7,14 @@ from numpy import get_include as np_get_include
 
 
 class SetupSettings:
-
     def __init__(self):
         self.os = platform.system().lower()
 
     @property
     def nthreads(self) -> int:
-        return {
-            "linux": mp.cpu_count(),
-            "darwin": mp.cpu_count(),
-            "windows": 0
-        }.get(self.os, 0)
+        return {"linux": mp.cpu_count(), "darwin": mp.cpu_count(), "windows": 0}.get(
+            self.os, 0
+        )
 
 
 # fmt: off
